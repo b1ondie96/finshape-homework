@@ -7,27 +7,35 @@ import LoadingButton from "@mui/lab/LoadingButton";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import { CREATE_USER } from "@/utils/Apollo";
-import { redirect } from "next/navigation";
+import { useRouter } from "next/navigation";
+import { useAuth } from "@/utils/useAuth";
 const Register = () => {
   const { control, handleSubmit } = useForm({
     defaultValues: { username: "", email: "", password: "" },
   });
   const [createUser, { loading }] = useMutation(CREATE_USER);
-
+  const { authUser } = useAuth() || {};
+  const router = useRouter();
   const onSubmit: SubmitHandler<RegisterFormInput> = async (data) => {
     try {
-      const result = await createUser({
+      await createUser({
         variables: data,
       });
 
-      console.log(result);
-      redirect("/");
+      if (authUser) {
+        await authUser({
+          email: data.email,
+          password: data.password,
+        });
+      }
+      router.push("/");
     } catch (error) {
       console.error(error);
     }
   };
 
   return (
+    <Box display={"flex"} flexDirection={"column"} alignItems={"center"}>
     <Box
       component={"form"}
       flexDirection={"column"}
@@ -37,6 +45,7 @@ const Register = () => {
       rowGap={1}
       maxWidth={{ xs: "100%", sm: "50%" }}
       onSubmit={handleSubmit(onSubmit)}
+      
     >
       <Typography variant={"h3"} textTransform={"uppercase"}>
         Register
@@ -89,6 +98,7 @@ const Register = () => {
       >
         Register
       </LoadingButton>
+    </Box>
     </Box>
   );
 };

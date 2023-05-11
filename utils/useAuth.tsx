@@ -16,11 +16,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const [token, setToken] = useLocalStorage("token", null);
   const [username, setUsername] = useLocalStorage("username", null);
+  const [userID, setUserID] = useLocalStorage("userID", null);
   useEffect(() => {
-    if (token && username) {
-      setUser({ token: token, username: username });
+    if (token && username && userID) {
+      setUser({ token: token, username: username, userid: userID });
     }
-  }, [token, username]);
+  }, [token, username, userID]);
   const authUser = async (
     inputData: Pick<RegisterFormInput, "email" | "password">
   ) => {
@@ -33,16 +34,27 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         setUser({
           token: data.authenticateUserWithPassword.token,
           username: data.authenticateUserWithPassword.item.name,
+          userid: data.authenticateUserWithPassword.item.id,
         });
         setUsername(data.authenticateUserWithPassword.item.name);
         setToken(data.authenticateUserWithPassword.token);
+        setUserID(data.authenticateUserWithPassword.item.id);
       }
     } catch (error) {
-      console.error(error);
+      if (error instanceof Error) {
+        throw new Error(error.message);
+      }
+      throw new Error("error");
     }
   };
+  const logout = () => {
+    setUser(null);
+    setUsername(null);
+    setToken(null);
+    setUserID(null);
+  };
   return (
-    <AuthContext.Provider value={{ user, authUser, loading }}>
+    <AuthContext.Provider value={{ user, authUser, loading, logout }}>
       {children}
     </AuthContext.Provider>
   );

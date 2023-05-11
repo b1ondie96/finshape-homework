@@ -6,45 +6,53 @@ import { useAuth } from "@/utils/useAuth";
 import Button from "@mui/material/Button";
 import LoginModal from "@/components/LoginModal";
 import { useState } from "react";
-import { useCookies } from "react-cookie";
-import useLocalStorage from "@/utils/useLocalStorage";
+import { Box } from "@mui/material";
 
 export default function Home() {
-  const { user } = useAuth() || {};
+  const { user, logout } = useAuth() || {};
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
-  const [cookies, setCookie] = useCookies(["token"]);
-  const [value, setValue] = useLocalStorage("token", null);
-  const [username, setname] = useLocalStorage("username", null);
-  console.log(value, username);
-  console.log(user)
   return (
     <>
-      {" "}
       <LoginModal
         open={isLoginModalOpen}
         setIsLoginModalOpen={setIsLoginModalOpen}
       />
-      <Scoreboard />
-      {user ? (
-        <>
-          Welcome back, {user?.username}
-          <Link href="/game">
-            <Button variant="contained">New Game</Button>
-          </Link>
-        </>
-      ) : (
-        <>
-          <p>Login or register to play</p>
-          <Button variant="contained" onClick={() => setIsLoginModalOpen(true)}>
-            Log in
-          </Button>
-          <Link href="/register">
-            <Button variant="contained" color="secondary">
-              Register
-            </Button>
-          </Link>
-        </>
-      )}
+      <Box
+        display={"flex"}
+        alignItems={"center"}
+        flexDirection={"column"}
+        gap={4}
+      >
+        <Scoreboard />
+        {user ? (
+          <>
+            Welcome back, {user?.username}
+            <Box display={"flex"} gap={2}>
+              <Link href="/game">
+                <Button variant="contained">New Game</Button>
+              </Link>
+              <Button onClick={logout}>Logout</Button>
+            </Box>
+          </>
+        ) : (
+          <>
+            <p>Login or register to play</p>
+            <Box display={"flex"} gap={2}>
+              <Button
+                variant="contained"
+                onClick={() => setIsLoginModalOpen(true)}
+              >
+                Log in
+              </Button>
+              <Link href="/register">
+                <Button variant="contained" color="secondary">
+                  Register
+                </Button>
+              </Link>
+            </Box>
+          </>
+        )}
+      </Box>
     </>
   );
 }

@@ -81,3 +81,14 @@ export const CREATE_SCORE = gql`
     }
   }
 `;
+
+export const USER_TOPSCORE = gql`
+  query allScores($id: ID) {
+    allScores(where: { player: { id: $id } }, sortBy: score_DESC, first: 1) {
+      score
+      player {
+        name
+      }
+    }
+  }
+`;
