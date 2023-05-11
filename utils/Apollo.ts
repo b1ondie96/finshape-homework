@@ -16,6 +16,7 @@ export const apolloClient = () => {
 
   return client;
 };
+
 export const GET_SCORES = gql`
   {
     allScores(sortBy: score_DESC, first: 10, where: { score_gte: 0 }) {
@@ -37,7 +38,7 @@ export const CREATE_USER = gql`
   }
 `;
 export const AUTH_USER = gql`
-  mutation authenticateUserWithPassword($email: String, $password: String) {
+  mutation authenticateUserWithPassword($email: String!, $password: String!) {
     authenticateUserWithPassword(email: $email, password: $password) {
       token
       item {
@@ -57,11 +58,26 @@ export const NEW_GAME = gql`
   }
 `;
 export const PROCESS_GAME = gql`
-  mutation processGame($state: String, $score: Int!, $direction: String) {
+  mutation processGame(
+    $state: [[Int!]!]!
+    $score: Int!
+    $direction: Direction!
+  ) {
     processGame(game: { state: $state, score: $score, direction: $direction }) {
       state
       score
       finished
+    }
+  }
+`;
+export const CREATE_SCORE = gql`
+  mutation createScore($score: Int) {
+    createScore(data: { score: $score }) {
+      player {
+        id
+        name
+      }
+      score
     }
   }
 `;
