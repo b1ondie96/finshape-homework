@@ -4,6 +4,8 @@ import { Inter } from "next/font/google";
 import { ApolloProvider } from "@apollo/client";
 import { apolloClient } from "@/utils/Apollo";
 import { CookiesProvider } from "react-cookie";
+import { AuthProvider } from "@/utils/useAuth";
+
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata = {
@@ -20,7 +22,9 @@ export default function RootLayout({
     <html lang="en">
       <CookiesProvider>
         <ApolloProvider client={apolloClient()}>
-          <body className={inter.className}>{children}</body>
+          <AuthProvider>
+            <body className={inter.className}>{children}</body>
+          </AuthProvider>
         </ApolloProvider>
       </CookiesProvider>
     </html>

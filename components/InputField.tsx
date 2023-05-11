@@ -5,7 +5,7 @@ import InputAdornment from "@mui/material/InputAdornment";
 import TextField from "@mui/material/TextField";
 import { forwardRef, useState } from "react";
 import { MdVisibilityOff, MdVisibility } from "react-icons/md";
-const InputField = forwardRef(({ error, password, ...props }: InputProps) => {
+const InputField = forwardRef(({ error, password, ...props }: InputProps,ref) => {
   const { name } = props;
   const [isPasswordVisible, setisPasswordVisible] = useState(false);
   return (

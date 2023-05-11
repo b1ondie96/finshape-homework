@@ -4,6 +4,8 @@ import {
   NormalizedCacheObject,
   gql,
 } from "@apollo/client";
+
+
 export const apolloClient = () => {
   let client: ApolloClient<NormalizedCacheObject> | null = null;
   if (!client || typeof window === "undefined") {
@@ -46,3 +48,5 @@ export const AUTH_USER = gql`
     }
   }
 `;
+export const NEW_GAME = gql``
+export const PROCESS_GAME = gql``

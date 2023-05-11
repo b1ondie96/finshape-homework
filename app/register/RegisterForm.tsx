@@ -1,18 +1,18 @@
+"use client";
 import { useForm, Controller, SubmitHandler } from "react-hook-form";
 import { RegisterFormInput } from "@types";
 import InputField from "@components/InputField";
-import { gql, useMutation } from "@apollo/client";
+import { useMutation } from "@apollo/client";
 import LoadingButton from "@mui/lab/LoadingButton";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
-import { AUTH_USER, CREATE_USER } from "@/utils/Apollo";
+import { CREATE_USER } from "@/utils/Apollo";
 import { redirect } from "next/navigation";
 const Register = () => {
   const { control, handleSubmit } = useForm({
     defaultValues: { username: "", email: "", password: "" },
   });
   const [createUser, { loading }] = useMutation(CREATE_USER);
-  const [authUser] = useMutation(AUTH_USER);
 
   const onSubmit: SubmitHandler<RegisterFormInput> = async (data) => {
     try {
