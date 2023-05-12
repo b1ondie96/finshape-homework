@@ -29,7 +29,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       const { data } = await authUserMutation({
         variables: inputData,
       });
-      console.log(data);
+
       if (data) {
         setUser({
           token: data.authenticateUserWithPassword.token,

@@ -5,19 +5,19 @@ import {
   useMutation,
   useQuery,
 } from "@apollo/client";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { PROCESS_GAME, CREATE_SCORE, NEW_GAME } from "./Apollo";
 import useLocalStorage from "./useLocalStorage";
-
-const useGame = (): [
+type UseGame = [
   GameState | undefined,
   (
     variables?: Partial<OperationVariables> | undefined
   ) => Promise<ApolloQueryResult<NewGameResponse>>
-] => {
+];
+const useGame = (): UseGame => {
   const [token] = useLocalStorage("token", null);
-  const [gameState, setGameState] = useState<GameState>();
   const context = { headers: { authorization: `Bearer ${token}` } };
+  const [gameState, setGameState] = useState<GameState>();
   const { data, refetch } = useQuery<NewGameResponse>(NEW_GAME, {
     context: { headers: { authorization: `Bearer ${token}` } },
   });
@@ -26,19 +26,16 @@ const useGame = (): [
       setGameState(data.newGame);
     }
   }, [data]);
-  const [processGame, { loading: processLoading }] = useMutation(PROCESS_GAME, {
+  const [processGame, { loading }] = useMutation(PROCESS_GAME, {
     context: context,
   });
   const [createScore] = useMutation(CREATE_SCORE, {
     context: context,
     variables: { score: gameState?.score || 0 },
   });
-  useEffect(() => {
-    if (gameState?.finished) {
-      createScore();
-    }
-    const updateGame = async (ev: KeyboardEvent) => {
-      if (!gameState?.finished && !processLoading) {
+  const updateGame = useCallback(
+    async (ev: KeyboardEvent) => {
+      if (!gameState?.finished && !loading && ev.key.includes("Arrow")) {
         try {
           const { data } = await processGame({
             variables: {
@@ -52,12 +49,18 @@ const useGame = (): [
           console.error(error);
         }
       }
-    };
+    },
+    [gameState]
+  );
+  useEffect(() => {
+    if (gameState?.finished) {
+      createScore();
+    }
     if (typeof window !== "undefined" && !gameState?.finished) {
       window.addEventListener("keydown", updateGame);
     }
     return () => window.removeEventListener("keydown", updateGame);
-  }, [processGame, gameState, createScore]);
+  }, [processGame, gameState, createScore, updateGame]);
 
   return [gameState, refetch];
 };

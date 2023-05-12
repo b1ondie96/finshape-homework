@@ -1,10 +1,11 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import useLocalStorage from "@/utils/useLocalStorage";
 import dynamic from "next/dynamic";
 import { redirect } from "next/navigation";
 import Box from "@mui/material/Box";
+
 const Game = dynamic(() => import("./Game"), { ssr: false });
 const Page = () => {
   const [token] = useLocalStorage("token", null);

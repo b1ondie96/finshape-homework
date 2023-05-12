@@ -4,12 +4,11 @@ import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
 import TableContainer from "@mui/material/TableContainer";
 import TableRow from "@mui/material/TableRow";
-import Paper from "@mui/material/Paper";
 import Alert from "@mui/material/Alert";
 import { useQuery } from "@apollo/client";
 import { AllScores } from "@/types";
 import { GET_SCORES } from "@/utils/Apollo";
-import { TableHead, Typography } from "@mui/material";
+import { Typography } from "@mui/material";
 
 export default function Scoreboard() {
   const { loading, error, data } = useQuery<AllScores>(GET_SCORES);

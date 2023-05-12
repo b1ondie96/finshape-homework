@@ -33,7 +33,7 @@ export default function RootLayout({
                 justifyContent={"center"}
               >
                 <Link href="/">
-                  <Typography variant="h1">2048</Typography>
+                  <Typography variant="h3">2048</Typography>
                 </Link>
               </Box>
               {children}

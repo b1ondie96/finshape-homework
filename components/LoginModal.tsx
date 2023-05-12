@@ -6,7 +6,6 @@ import { LoadingButton } from "@mui/lab";
 import { Alert, Box, Typography } from "@mui/material";
 import InputField from "./InputField";
 import { useAuth } from "@/utils/useAuth";
-import { motion } from "framer-motion";
 import { useState } from "react";
 const LoginModal = ({ open, setIsLoginModalOpen }: LoginModalProps) => {
   const { control, handleSubmit } = useForm({
@@ -21,7 +20,6 @@ const LoginModal = ({ open, setIsLoginModalOpen }: LoginModalProps) => {
     setErrorMsg("");
     try {
       await authUser(inputData);
-
       setIsLoginModalOpen(false);
     } catch (error) {
       console.error(error);
