@@ -9,11 +9,18 @@ import Typography from "@mui/material/Typography";
 import { CREATE_USER } from "@/utils/Apollo";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/utils/useAuth";
+import { emailRules, passwordRules } from "@/utils/formRules";
+import { useEffect } from "react";
 const Register = () => {
-  const { control, handleSubmit } = useForm({
+  const {
+    control,
+    handleSubmit,
+    formState: { isSubmitting },
+    setFocus,
+  } = useForm({
     defaultValues: { username: "", email: "", password: "" },
   });
-  const [createUser, { loading }] = useMutation(CREATE_USER);
+  const [createUser] = useMutation(CREATE_USER);
   const { authUser } = useAuth() || {};
   const router = useRouter();
   const onSubmit: SubmitHandler<RegisterFormInput> = async (data) => {
@@ -33,7 +40,9 @@ const Register = () => {
       console.error(error);
     }
   };
-
+  useEffect(() => {
+    setFocus("username");
+  }, [setFocus]);
   return (
     <Box display={"flex"} flexDirection={"column"} alignItems={"center"}>
       <Box
@@ -46,7 +55,9 @@ const Register = () => {
         maxWidth={{ xs: "100%", sm: "50%" }}
         onSubmit={handleSubmit(onSubmit)}
       >
-        <Typography variant={"h5"} fontWeight={900}>Create free account</Typography>
+        <Typography variant={"h5"} fontWeight={900}>
+          Create free account
+        </Typography>
         <Controller
           name="username"
           rules={{
@@ -54,41 +65,33 @@ const Register = () => {
           }}
           control={control}
           render={({ field, fieldState }) => (
-            <InputField error={fieldState.error} {...field} />
+            <InputField state={fieldState} {...field} ref={field.ref} />
           )}
         />
         <Controller
           name="email"
           control={control}
-          rules={{
-            required: { value: true, message: "Email is required" },
-            pattern: {
-              value: /\b[\w.-]+@[\w.-]+\.\w{2,6}\b/,
-              message: "Invalid email format",
-            },
-          }}
+          rules={emailRules}
           render={({ field, fieldState }) => (
-            <InputField error={fieldState.error} {...field} />
+            <InputField state={fieldState} {...field} ref={field.ref} />
           )}
         />
         <Controller
           name="password"
           control={control}
-          rules={{
-            required: { value: true, message: "Password is required" },
-            pattern: {
-              value: /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$/gm,
-              message:
-                "Password must contain at least 1 uppercase letter, 1 lowercase letter, and 1 number",
-            },
-          }}
+          rules={passwordRules}
           render={({ field, fieldState }) => (
-            <InputField error={fieldState.error} {...field} password />
+            <InputField
+              state={fieldState}
+              {...field}
+              password
+              ref={field.ref}
+            />
           )}
         />
         <LoadingButton
           fullWidth
-          loading={loading}
+          loading={isSubmitting}
           type="submit"
           size="large"
           variant="contained"

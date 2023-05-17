@@ -7,8 +7,13 @@ import { Alert, Box, Typography } from "@mui/material";
 import InputField from "./InputField";
 import { useAuth } from "@/utils/useAuth";
 import { useState } from "react";
+import { emailRules } from "@/utils/formRules";
 const LoginModal = ({ open, setIsLoginModalOpen }: LoginModalProps) => {
-  const { control, handleSubmit } = useForm({
+  const {
+    control,
+    handleSubmit,
+    formState: { isSubmitting },
+  } = useForm({
     defaultValues: { email: "", password: "" },
   });
   const { authUser, loading } = useAuth() || {};
@@ -67,15 +72,9 @@ const LoginModal = ({ open, setIsLoginModalOpen }: LoginModalProps) => {
         <Controller
           name="email"
           control={control}
-          rules={{
-            required: { value: true, message: "Email is required" },
-            pattern: {
-              value: /\b[\w.-]+@[\w.-]+\.\w{2,6}\b/,
-              message: "Invalid email format",
-            },
-          }}
+          rules={emailRules}
           render={({ field, fieldState }) => (
-            <InputField error={fieldState.error} {...field} />
+            <InputField state={fieldState} {...field} ref={field.ref} />
           )}
         />
         <Controller
@@ -85,12 +84,17 @@ const LoginModal = ({ open, setIsLoginModalOpen }: LoginModalProps) => {
             required: { value: true, message: "Password is required" },
           }}
           render={({ field, fieldState }) => (
-            <InputField error={fieldState.error} {...field} password />
+            <InputField
+              {...field}
+              ref={field.ref}
+              state={fieldState}
+              password
+            />
           )}
         />
         <LoadingButton
           fullWidth
-          loading={loading}
+          loading={isSubmitting}
           type="submit"
           size="large"
           variant="contained"

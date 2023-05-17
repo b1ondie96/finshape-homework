@@ -1,17 +1,18 @@
 "use client";
-
-import React, { useEffect, useRef } from "react";
+import React from "react";
 import useLocalStorage from "@/utils/useLocalStorage";
-import dynamic from "next/dynamic";
 import { redirect } from "next/navigation";
 import Box from "@mui/material/Box";
+import useGame from "@/utils/useGame";
+import { Typography } from "@mui/material";
+import Game from "./Game";
 
-const Game = dynamic(() => import("./Game"), { ssr: false });
 const Page = () => {
   const [token] = useLocalStorage("token", null);
   if (!token) {
     redirect("/");
   }
+  const { gameState } = useGame();
 
   return (
     <Box
@@ -21,7 +22,11 @@ const Page = () => {
       mt={2}
       position={"relative"}
     >
-      {<Game />}
+      {gameState ? (
+        <Game />
+      ) : (
+        <Typography variant="h3">Loading game</Typography>
+      )}
     </Box>
   );
 };

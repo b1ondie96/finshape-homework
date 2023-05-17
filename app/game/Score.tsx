@@ -1,65 +1,40 @@
-import { GameState } from "@/types";
-import { USER_TOPSCORE } from "@/utils/Apollo";
-import { useAuth } from "@/utils/useAuth";
-import { useQuery } from "@apollo/client";
-import { Typography } from "@mui/material";
+import useGame from "@/utils/useGame";
+import { styled } from "@mui/system";
 import Box from "@mui/material/Box";
-import React, { useEffect } from "react";
+import React from "react";
 import CountUp from "react-countup";
-const Score = ({ score }: { score: number }) => {
-  const { user } = useAuth() || {};
-  const { loading, data, refetch } = useQuery<any>(USER_TOPSCORE, {
-    variables: { id: user?.userid },
-  });
-
+const StyledBox = styled(Box)({
+  display: "flex",
+  flexDirection: "column",
+  alignItems: "center",
+  backgroundColor: "#a71bc5",
+  borderRadius: 8,
+  padding: "16px",
+});
+const Value = ({ score }: { score: number }) => {
+  return (
+    <CountUp
+      start={0}
+      end={score}
+      decimals={0}
+      preserveValue
+      decimal="."
+      duration={0.4}
+    />
+  );
+};
+const Score = () => {
+  const { gameState, hiscore } = useGame();
   return (
     <Box display={"inline-flex"} gap={2}>
-      <Box
-        display={"flex"}
-        flexDirection={"column"}
-        alignItems={"center"}
-        bgcolor={"#a71bc5"}
-        p={2}
-        borderRadius={2}
-      >
+      <StyledBox>
         SCORE
-        <Typography>
-          <CountUp
-            start={0}
-            end={score || 0}
-            decimals={0}
-            preserveValue
-            decimal="."
-            duration={0.4}
-          />
-        </Typography>
-      </Box>
-      <Box
-        display={"flex"}
-        flexDirection={"column"}
-        alignItems={"center"}
-        bgcolor={"#a71bc5"}
-        p={2}
-        borderRadius={2}
-        onClick={() => refetch()}
-        sx={{ cursor: "pointer" }}
-      >
+        <Value score={gameState?.score || 0} />
+      </StyledBox>
+      <StyledBox>
         YOUR BEST
-        {loading ? (
-          "loading"
-        ) : (
-          <Typography>
-            <CountUp
-              start={0}
-              end={data?.allScores[0]?.score || 0}
-              decimals={0}
-              preserveValue
-              decimal="."
-              duration={1}
-            />
-          </Typography>
-        )}
-      </Box>
+        <Value score={hiscore || 0} />
+      </StyledBox>
     </Box>
   );
 };

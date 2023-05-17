@@ -1,4 +1,4 @@
-import { ControllerRenderProps, FieldError } from "react-hook-form";
+import { ControllerFieldState, ControllerRenderProps } from "react-hook-form";
 
 export interface RegisterFormInput {
   username: string;
@@ -7,7 +7,7 @@ export interface RegisterFormInput {
 }
 export interface InputProps extends ControllerRenderProps<RegisterFormInput> {
   password?: boolean;
-  error?: FieldError;
+  state: ControllerFieldState;
 }
 export interface LoginModalProps {
   open: boolean;

@@ -31,20 +31,25 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       });
 
       if (data) {
+        const {
+          authenticateUserWithPassword: {
+            token,
+            item: { name, id },
+          },
+        } = data;
         setUser({
-          token: data.authenticateUserWithPassword.token,
-          username: data.authenticateUserWithPassword.item.name,
-          userid: data.authenticateUserWithPassword.item.id,
+          token: token,
+          username: name,
+          userid: id,
         });
-        setUsername(data.authenticateUserWithPassword.item.name);
-        setToken(data.authenticateUserWithPassword.token);
-        setUserID(data.authenticateUserWithPassword.item.id);
+        setUsername(name);
+        setToken(token);
+        setUserID(id);
       }
     } catch (error) {
       if (error instanceof Error) {
-        throw new Error(error.message);
-      }
-      throw new Error("error");
+        console.error(error.message, error.name);
+      } else console.error(error);
     }
   };
   const logout = () => {

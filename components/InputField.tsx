@@ -43,49 +43,50 @@ const StyledTextField = styled(TextField)(() => ({
     },
   },
 }));
-const InputField = forwardRef(
-  ({ error, password, ...props }: InputProps, ref) => {
-    const { name } = props;
-    const [isPasswordVisible, setisPasswordVisible] = useState(false);
-    return (
-      <StyledTextField
-        fullWidth
-        error={Boolean(error)}
-        helperText={error ? error.message : " "}
-        placeholder={name}
-        label={name}
-        type={password ? (isPasswordVisible ? "text" : "password") : "text"}
-        InputProps={
-          password
-            ? {
-                endAdornment: (
-                  <InputAdornment position="end">
-                    <IconButton
-                      onClick={() => {
-                        setisPasswordVisible(!isPasswordVisible);
-                      }}
-                      tabIndex={-1}
-                      aria-label="toggle password visibility"
-                      sx={{
-                        color: "#fbfbfbcc",
-                        ":hover": { cursor: "pointer" },
-                      }}
-                      edge="end"
-                    >
-                      {isPasswordVisible ? (
-                        <MdVisibilityOff />
-                      ) : (
-                        <MdVisibility />
-                      )}
-                    </IconButton>
-                  </InputAdornment>
-                ),
-              }
-            : undefined
-        }
-        {...props}
-      />
-    );
-  }
-);
+const InputField = forwardRef((props: InputProps, ref) => {
+  const {
+    name,
+    state: { error },
+    password,
+    ...restProps
+  } = props;
+
+  const [isPasswordVisible, setisPasswordVisible] = useState(false);
+  return (
+    <StyledTextField
+      {...restProps}
+      fullWidth
+      inputRef={ref}
+      error={Boolean(error)}
+      helperText={error ? error.message : " "}
+      placeholder={name}
+      label={name}
+      type={password ? (isPasswordVisible ? "text" : "password") : "text"}
+      InputProps={
+        password
+          ? {
+              endAdornment: (
+                <InputAdornment position="end">
+                  <IconButton
+                    onClick={() => {
+                      setisPasswordVisible(!isPasswordVisible);
+                    }}
+                    tabIndex={-1}
+                    aria-label="toggle password visibility"
+                    sx={{
+                      color: "#fbfbfbcc",
+                      ":hover": { cursor: "pointer" },
+                    }}
+                    edge="end"
+                  >
+                    {isPasswordVisible ? <MdVisibilityOff /> : <MdVisibility />}
+                  </IconButton>
+                </InputAdornment>
+              ),
+            }
+          : undefined
+      }
+    />
+  );
+});
 export default InputField;
